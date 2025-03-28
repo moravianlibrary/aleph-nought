@@ -1,0 +1,4 @@
+pydantic
+lxml
+requests
+/home/robert/repositories/work/vera-modules/marcdantic

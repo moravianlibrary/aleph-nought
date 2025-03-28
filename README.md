@@ -1,0 +1,3 @@
+# Aleph Client
+
+Aleph client that supports requesting thorught OAI, X and Z39.50 services.
