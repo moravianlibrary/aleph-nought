@@ -74,4 +74,4 @@ def get_result_set_record(
     if result is None or length.value == 0:
         raise Exception(f"Result set does not contain record at index {index}")
 
-    return MarcRecord(result)
+    return MarcRecord.from_mrc(result)

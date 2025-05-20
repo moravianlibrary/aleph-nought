@@ -14,7 +14,7 @@ class AlephWebClient:
             "https://",
             HTTPAdapter(
                 max_retries=Retry(
-                    total=config.total_retries,
+                    total=config.total_retry,
                     backoff_factor=config.retry_backoff_factor,
                     status_forcelist=[500, 502, 503, 504],
                 )

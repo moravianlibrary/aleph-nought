@@ -1,4 +1,4 @@
 pydantic
 lxml
 requests
-/home/robert/repositories/work/vera-modules/marcdantic
+git+https://github.com/moravianlibrary/marcdantic.git

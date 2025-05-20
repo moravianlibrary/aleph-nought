@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel, model_validator
 
 
@@ -9,8 +11,13 @@ class AlephWebConfig(BaseModel):
     retry_backoff_factor: int = 1
 
 
+# TODO: Add validation for oai_identifier_template.
+# TODO: Also validate that at least one oai_set is provided.
 class AlephOAIConfig(AlephWebConfig):
     base: str
+    system_number_pattern: str
+    oai_sets: List[str]
+    oai_identifier_template: str
 
 
 class AlephXConfig(AlephWebConfig):

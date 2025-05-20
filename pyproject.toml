@@ -14,8 +14,9 @@ authors = [
 requires-python = ">=3.12"
 dynamic = ["dependencies", "description", "readme"]
 
-[tool.setuptools]
-packages = ["aleph_nought"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["aleph_nought*"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = "requirements.txt"}

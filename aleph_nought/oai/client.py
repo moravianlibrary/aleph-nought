@@ -1,5 +1,6 @@
+import re
 from logging import getLogger
-from typing import Generator, Tuple
+from typing import Generator, NamedTuple
 
 from lxml import etree
 from marcdantic import MarcRecord
@@ -10,7 +11,12 @@ from ..web_client import AlephWebClient
 from .constants import MARC_NS, NS_0, OAI_NS
 from .custom_types import OaiVerb
 
-ListRecordResponse = Tuple[str, RecordStatus, MarcRecord | None]
+
+class ListRecordResponse(NamedTuple):
+    base: str
+    system_number: str
+    status: RecordStatus
+    record: MarcRecord | None = None
 
 
 logger = getLogger("aleph_nought")
@@ -19,7 +25,35 @@ logger = getLogger("aleph_nought")
 class AlephOAIClient(AlephWebClient):
     def __init__(self, config: AlephOAIConfig):
         super().__init__(config)
-        self._base = config.base
+        self._oai_sets = config.oai_sets
+        self._oai_identifier_template = config.oai_identifier_template.format(
+            base=config.base, doc_number="{doc_number}"
+        )
+        self._parse_identifier_pattern = self._build_parse_identifier_pattern(
+            config.oai_identifier_template,
+            config.base,
+            config.system_number_pattern,
+        )
+
+    def _build_parse_identifier_pattern(
+        self,
+        template: str,
+        base: str,
+        system_number_pattern: str,
+    ) -> re.Pattern:
+        """
+        Builds a regex pattern to match OAI identifiers
+        from a template and allowed bases.
+        """
+        pattern = re.escape(template)
+
+        base_pattern = f"(?P<base>{re.escape(base)})"
+        system_pattern = f"(?P<system_number>{system_number_pattern})"
+
+        pattern = pattern.replace(re.escape("{base}"), base_pattern)
+        pattern = pattern.replace(re.escape("{doc_number}"), system_pattern)
+
+        return re.compile(pattern)
 
     def is_available(self) -> bool:
         try:
@@ -31,13 +65,15 @@ class AlephOAIClient(AlephWebClient):
         except Exception:
             return False
 
-    def get_record(self, base: str, doc_number: str) -> MarcRecord:
+    def get_record(self, doc_number: str) -> MarcRecord:
         response = self._session.get(
             f"{self._host}/{self._endpoint}",
             params={
                 "verb": OaiVerb.GetRecord.value,
                 "metadataPrefix": "marc21",
-                "identifier": f"oai:aleph.mzk.cz:{base}-{doc_number}",
+                "identifier": self._oai_identifier_template.format(
+                    doc_number=doc_number
+                ),
             },
         )
 
@@ -54,8 +90,8 @@ class AlephOAIClient(AlephWebClient):
 
         return MarcRecord.from_xml(xml_marc)
 
-    def list_records(
-        self, from_date: str, to_date: str
+    def _list_records_in_set(
+        self, oai_set: str, from_date: str, to_date: str
     ) -> Generator[ListRecordResponse, None, None]:
 
         params = {
@@ -63,7 +99,7 @@ class AlephOAIClient(AlephWebClient):
             "metadataPrefix": "marc21",
             "from": from_date,
             "until": to_date,
-            "set": self._base,
+            "set": oai_set,
         }
 
         while True:
@@ -90,22 +126,50 @@ class AlephOAIClient(AlephWebClient):
                 identifier = header.find(
                     ".//oai:identifier", namespaces=OAI_NS
                 ).text
+                if identifier is None:
+                    logger.error("Record without identifier found.")
+                    raise Exception("Record without identifier found.")
+
+                match_ = self._parse_identifier_pattern.search(identifier)
+                if match_ is None:
+                    logger.error(
+                        f"Record with invalid identifier found: {identifier}"
+                    )
+                    raise Exception(
+                        f"Record with invalid identifier found: {identifier}"
+                    )
+
+                base = match_.group("base")
+                system_number = match_.group("system_number")
 
                 if header.get("status") == "deleted":
-                    yield identifier, RecordStatus.Deleted, None
+                    yield ListRecordResponse(
+                        base=base,
+                        system_number=system_number,
+                        status=RecordStatus.Deleted,
+                    )
                     continue
 
                 xml_marc = record_result.find(
                     ".//marc:record", namespaces=MARC_NS
                 )
                 try:
-                    yield MarcRecord.from_xml(xml_marc)
+                    yield ListRecordResponse(
+                        base=base,
+                        system_number=system_number,
+                        status=RecordStatus.Active,
+                        record=MarcRecord.from_xml(xml_marc),
+                    )
                 except Exception as e:
                     logger.error(f"Error processing record {identifier}: {e}")
                     logger.debug(
                         f"Record content: {etree.tostring(record_result)}"
                     )
-                    yield identifier, RecordStatus.Failed, None
+                    yield ListRecordResponse(
+                        base=base,
+                        system_number=system_number,
+                        status=RecordStatus.Failed,
+                    )
 
             resumption_token = content.find(
                 ".//oai:resumptionToken", namespaces=OAI_NS
@@ -117,3 +181,9 @@ class AlephOAIClient(AlephWebClient):
                 "verb": OaiVerb.ListRecords.value,
                 "resumptionToken": resumption_token.text,
             }
+
+    def list_records(
+        self, from_date: str, to_date: str
+    ) -> Generator[ListRecordResponse, None, None]:
+        for oai_set in self._oai_sets:
+            yield from self._list_records_in_set(oai_set, from_date, to_date)

@@ -34,7 +34,6 @@ class AlephZ3950Client:
         """Search for records. The base must return MARC21 in UTF-8 encoding
 
         Args:
-            base (str): catalog base
             query (str): query in format PQF
                 (https://software.indexdata.com/yaz/doc/tools.html)
         """

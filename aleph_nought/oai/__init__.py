@@ -1,3 +1,3 @@
-from .client import AlephOAIClient
+from .client import AlephOAIClient, ListRecordResponse
 
-__all__ = ["AlephOAIClient"]
+__all__ = ["AlephOAIClient", "ListRecordResponse"]
