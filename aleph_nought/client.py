@@ -1,3 +1,5 @@
+from typing import List, Mapping
+
 from .config import AlephConfig
 from .oai import AlephOAIClient
 from .x import AlephXClient
@@ -30,3 +32,14 @@ class AlephClient:
         if not self._z3950:
             raise ValueError("Z3950 service is not configured")
         return self._z3950
+
+
+def build_aleph_client_map(
+    config: List[AlephConfig],
+) -> Mapping[str, AlephClient]:
+    clients = {}
+    for cfg in config:
+        if cfg.base in clients:
+            raise ValueError(f"Duplicate Aleph base: {cfg.base}")
+        clients[cfg.base] = AlephClient(cfg)
+    return clients

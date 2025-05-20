@@ -1,4 +1,4 @@
-from .client import AlephClient
+from .client import AlephClient, build_aleph_client_map
 from .config import AlephConfig, AlephOAIConfig, AlephXConfig, AlephZ3950Config
 from .oai import AlephOAIClient, ListRecordResponse
 from .record_status import RecordStatus
@@ -14,6 +14,7 @@ __all__ = [
     "AlephXConfig",
     "AlephZ3950Client",
     "AlephZ3950Config",
+    "build_aleph_client_map",
     "ListRecordResponse",
     "RecordStatus",
 ]
