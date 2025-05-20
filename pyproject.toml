@@ -16,7 +16,7 @@ dependencies = [
     "lxml",
     "pydantic",
     "requests",
-    "solrify @ git+https://github.com/moravianlibrary/marcdantic.git"
+    "marcdantic @ git+https://github.com/moravianlibrary/marcdantic.git"
 ]
 dynamic = ["description", "readme"]
 
