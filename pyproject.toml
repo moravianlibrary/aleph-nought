@@ -12,13 +12,18 @@ authors = [
     {name = "Robert Randiak", email = "randiak@protonmail.com"}
 ]
 requires-python = ">=3.12"
-dynamic = ["dependencies", "description", "readme"]
+dependencies = [
+    "lxml",
+    "pydantic",
+    "requests",
+    "solrify @ git+https://github.com/moravianlibrary/marcdantic.git"
+]
+dynamic = ["description", "readme"]
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["aleph_nought*"]
 
 [tool.setuptools.dynamic]
-dependencies = {file = "requirements.txt"}
 description = {file = "description.txt"}
 readme = {file = "README.md"}
