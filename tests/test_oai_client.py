@@ -1,4 +1,5 @@
 import unittest
+from itertools import islice
 
 from aleph_nought import AlephOAIClient, AlephOAIConfig, RecordStatus
 
@@ -31,10 +32,24 @@ class TestOAIClient(unittest.TestCase):
 
     def test_list_records(self):
         records = list(
-            self.client.list_records(
-                "2025-03-01T00:00:00Z", "2025-03-02T00:00:00Z"
+            islice(
+                self.client.list_records(
+                    "2025-03-01T00:00:00Z", "2025-03-02T00:00:00Z"
+                ),
+                10,
             )
         )
+        self.assertGreater(len(records), 0)
+        for record in records:
+            self.assertIsNotNone(record)
+            if record.base:
+                self.assertEqual(record.base, "MZK01")
+            self.assertIn(
+                record.status, [RecordStatus.Active, RecordStatus.Deleted]
+            )
+
+    def test_list_records_without_specified_range(self):
+        records = list(islice(self.client.list_records(None, None), 10))
         self.assertGreater(len(records), 0)
         for record in records:
             self.assertIsNotNone(record)

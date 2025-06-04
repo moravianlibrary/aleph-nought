@@ -91,7 +91,7 @@ class AlephOAIClient(AlephWebClient):
         return MarcRecord.from_xml(xml_marc)
 
     def _list_records_in_set(
-        self, oai_set: str, from_date: str, to_date: str
+        self, oai_set: str, from_date: str | None, to_date: str | None
     ) -> Generator[ListRecordResponse, None, None]:
 
         params = {
@@ -183,7 +183,7 @@ class AlephOAIClient(AlephWebClient):
             }
 
     def list_records(
-        self, from_date: str, to_date: str
+        self, from_date: str | None, to_date: str | None
     ) -> Generator[ListRecordResponse, None, None]:
         for oai_set in self._oai_sets:
             yield from self._list_records_in_set(oai_set, from_date, to_date)
