@@ -38,7 +38,7 @@ class AlephConfig(BaseModel):
     x: AlephXConfig | None = None
     z3950: AlephZ3950Config | None = None
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def validate_config(cls, config: "AlephConfig") -> None:
         if not any([config.oai, config.x, config.z3950]):
             raise ValueError(
