@@ -9,7 +9,7 @@ PYTHON_DEPS := requirements.txt
 PYTHON_TESTS_LIB := coverage
 TESTS_DIR := tests
 
-VERSION := $(shell python -c 'import tomllib; print(tomllib.load(open("pyproject.toml"))["project"]["version"])')
+VERSION := $(shell python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
 GIT_TAG := v$(VERSION)
 
 .PHONY: generate-env remove-env regenerate-env publish
