@@ -1,4 +1,4 @@
 pydantic
 lxml
 requests
-git+https://github.com/moravianlibrary/marcdantic.git
+git+https://github.com/moravianlibrary/marcdantic.git@v0.1.0
