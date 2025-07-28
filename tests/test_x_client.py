@@ -16,8 +16,14 @@ class TestXClient(unittest.TestCase):
         self.assertTrue(self.client.is_available())
 
     def test_get_record(self):
-        system_numbers = list(
-            self.client.find_system_numbers("BAR", "2610893386")
-        )
-        self.assertEqual(len(system_numbers), 1)
-        self.assertEqual(system_numbers[0], "MZK01-0002610893386")
+        try:
+            system_numbers = list(
+                self.client.find_system_numbers("BAR", "2610893386")
+            )
+            self.assertEqual(len(system_numbers), 1)
+            self.assertEqual(system_numbers[0], "MZK01-0002610893386")
+        except RuntimeError as e:
+            if "Error 403 Forbidden" in str(e):
+                self.skipTest("X-Server operation not available")
+            else:
+                raise

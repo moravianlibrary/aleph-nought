@@ -7,6 +7,32 @@ from .z3950 import AlephZ3950Client
 
 
 class AlephClient:
+    """
+    Unified client for accessing multiple Aleph services.
+
+    This class acts as a facade over the individual Aleph service clients:
+    OAI, X-Server, and Z39.50, providing convenient access to each
+    configured service.
+
+    Parameters
+    ----------
+    config : AlephConfig
+        Configuration object specifying which Aleph services to enable
+        and their connection details.
+
+    Attributes
+    ----------
+    OAI : AlephOAIClient
+        Client for the Aleph OAI-PMH service.
+        Raises ValueError if not configured.
+    X : AlephXClient
+        Client for the Aleph X-Server service.
+        Raises ValueError if not configured.
+    Z3950 : AlephZ3950Client
+        Client for the Aleph Z39.50 service.
+        Raises ValueError if not configured.
+    """
+
     def __init__(self, config: AlephConfig):
         if config.oai:
             self._oai = AlephOAIClient(config.oai)
@@ -37,6 +63,25 @@ class AlephClient:
 def build_aleph_client_map(
     config: List[AlephConfig],
 ) -> Mapping[str, AlephClient]:
+    """
+    Build a mapping from Aleph base codes to AlephClient instances.
+
+    Parameters
+    ----------
+    config : List[AlephConfig]
+        List of AlephConfig objects, each describing a single Aleph base and
+        its enabled services.
+
+    Returns
+    -------
+    Mapping[str, AlephClient]
+        Dictionary mapping each Aleph base code to a configured AlephClient.
+
+    Raises
+    ------
+    ValueError
+        If duplicate base codes are found in the provided configuration list.
+    """
     clients = {}
     for cfg in config:
         if cfg.base in clients:
