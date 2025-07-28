@@ -74,27 +74,22 @@ A unified client that wraps all three service clients (OAI, X, Z39.50).
 
 ## Installation
 
-Install required dependencies using `pip`:
+### Installing from GitHub using version tag
+
+You can install the package directly from GitHub for a specific version tag:
 
 ```bash
-pip install -r requirements.txt
+pip install git+https://github.com/moravianlibrary/aleph-nought.git@v1.2.3
 ```
 
-> Note: The `AlephZ3950Client` depends on the YAZ toolkit and Python bindings, which must be installed separately.
+*Replace `v1.2.3` with the desired version tag*
 
-Here's a detailed installation note for the YAZ library you can add to your README under the Installation section:
-
----
-
-## Installation
-
-Install required dependencies using `pip`:
+To always install the most recent version, use the latest tag:
 
 ```bash
-pip install -r requirements.txt
+pip install git+https://github.com/moravianlibrary/aleph-nought.git@latest
 ```
 
-> **Note:** The `AlephZ3950Client` depends on the YAZ toolkit and Python bindings, which must be installed separately.
 
 ### Installing YAZ
 
@@ -119,6 +114,31 @@ brew install yaz
 
 *To use the YAZ command-line client, run the `yaz-client` command.*
 
+### Installing local 
+
+Install required dependencies using `pip`:
+
+```bash
+pip install -r requirements.txt
+```
+
+> **Note:** The `AlephZ3950Client` depends on the YAZ toolkit and Python bindings, which must be installed separately.
+
+---
+
+## Versions
+
+- **0.1.x**
+    Initial release series supporting:
+    - AlephOAIClient for OAI-PMH services
+    - AlephXClient for Aleph X-Server API
+    - AlephZ3950Client using YAZ toolkit bindings
+    - AlephClient as a unified client wrapper
+    - **0.1.0**  
+        First stable release with core functionality for all clients.
+- **latest**
+    Always points to the most up-to-date stable version of the client.
+
 ---
 
 ## Usage Example
@@ -136,7 +156,7 @@ config = AlephConfig(
 client = AlephClient(config)
 
 # Access OAI client
-records = list(client.OAI.list_records(from_date="2023-01-01", to_date="2023-06-30"))
+records = list(client.OAI.list_records(from_date="2023-01-01T00:00:00Z", to_date="2023-06-30T23:59:59Z"))
 
 # Use X-Server client to search system numbers
 system_numbers = list(client.X.find_system_numbers("TITLE", "Python"))

@@ -214,11 +214,13 @@ class AlephOAIClient(AlephWebClient):
         oai_set : str
             The identifier of the OAI set to harvest records from.
         from_date : str or None
-            The start date (inclusive) of the harvesting window
-            in `YYYY-MM-DD` format. If `None`, no lower date bound is used.
+            The start datetime (inclusive) of the harvesting window in
+            ISO 8601 format with time and 'Z' timezone, e.g.,
+            `"2025-03-01T00:00:00Z"`. If `None`, no lower date bound is used.
         to_date : str or None
-            The end date (inclusive) of the harvesting window
-            in `YYYY-MM-DD` format. If `None`, no upper date bound is used.
+            The end datetime (inclusive) of the harvesting window in
+            ISO 8601 format with time and 'Z' timezone, e.g.,
+            `"2025-03-02T00:00:00Z"`. If `None`, no upper date bound is used.
 
         Yields
         ------
@@ -342,11 +344,15 @@ class AlephOAIClient(AlephWebClient):
         Parameters
         ----------
         from_date : str or None
-            The start date (inclusive) of the harvesting window
-            in `YYYY-MM-DD` format. If `None`, no lower date bound is applied.
+            The start datetime (inclusive) of the harvesting window in
+            ISO 8601 format with time and 'Z' timezone, e.g.,
+            `"2025-03-01T00:00:00Z"`.
+            If `None`, no lower date bound is applied.
         to_date : str or None
-            The end date (inclusive) of the harvesting window
-            in `YYYY-MM-DD` format. If `None`, no upper date bound is applied.
+            The end datetime (inclusive) of the harvesting window in
+            ISO 8601 format with time and 'Z' timezone, e.g.,
+            `"2025-03-02T00:00:00Z"`.
+            If `None`, no upper date bound is applied.
 
         Yields
         ------

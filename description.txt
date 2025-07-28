@@ -1,1 +1,1 @@
-Aleph client that supports requesting thorught OAI, X and Z39.50 services.
+Aleph client library for accessing OAI-PMH, X-Server, and Z39.50 services from Aleph library systems. Provides unified and individual clients for querying bibliographic records and metadata.
