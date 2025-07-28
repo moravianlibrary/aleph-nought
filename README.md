@@ -90,6 +90,7 @@ To always install the most recent version, use the latest tag:
 pip install git+https://github.com/moravianlibrary/aleph-nought.git@latest
 ```
 
+> **Note:** The `AlephZ3950Client` depends on the YAZ library to be installed on the host machine.
 
 ### Installing YAZ
 
@@ -114,7 +115,7 @@ brew install yaz
 
 *To use the YAZ command-line client, run the `yaz-client` command.*
 
-### Installing local 
+### Installing local dev environment
 
 Install required dependencies using `pip`:
 
@@ -122,7 +123,7 @@ Install required dependencies using `pip`:
 pip install -r requirements.txt
 ```
 
-> **Note:** The `AlephZ3950Client` depends on the YAZ toolkit and Python bindings, which must be installed separately.
+> **Note:** As mentioned above, the `AlephZ3950Client` depends on the system-level YAZ library.
 
 ---
 
