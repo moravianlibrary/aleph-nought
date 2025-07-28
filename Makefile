@@ -9,6 +9,9 @@ PYTHON_DEPS := requirements.txt
 PYTHON_TESTS_LIB := coverage
 TESTS_DIR := tests
 
+VERSION := $(shell python -c 'import tomllib; print(tomllib.load(open("pyproject.toml"))["project"]["version"])')
+GIT_TAG := v$(VERSION)
+
 .PHONY: generate-env remove-env regenerate-env publish
 
 generate-env:
@@ -28,3 +31,14 @@ test:
 	&& $(PYTHON) -m coverage html \
 	&& $(PYTHON) -m coverage report
 
+tag-version:
+	@git tag -d $(GIT_TAG) 2>/dev/null || true
+	@git push origin :refs/tags/$(GIT_TAG) 2>/dev/null || true
+	git tag $(GIT_TAG)
+	git push origin $(GIT_TAG)
+
+tag-latest:
+	@git tag -d latest 2>/dev/null || true
+	@git push origin :refs/tags/latest 2>/dev/null || true
+	git tag latest
+	git push origin latest
