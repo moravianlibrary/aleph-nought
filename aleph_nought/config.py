@@ -134,3 +134,4 @@ class AlephConfig(BaseModel):
             raise ValueError(
                 "At least one of the Aleph services must be configured"
             )
+        return config
