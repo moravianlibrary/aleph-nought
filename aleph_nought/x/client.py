@@ -52,6 +52,7 @@ class AlephXClient(AlephWebClient):
         super().__init__(config)
         self._base = config.base
         self._page_size = config.page_size
+        self._context = config.context
 
     def is_available(self) -> bool:
         """

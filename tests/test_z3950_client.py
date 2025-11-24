@@ -13,4 +13,6 @@ class TestZ3950Client(unittest.TestCase):
     def test_get_record(self):
         records = list(self.client.search("@attr 1=12 000862960"))
         self.assertEqual(len(records), 1)
-        self.assertEqual(records[0].control_fields.control_number, "000862960")
+        self.assertEqual(
+            records[0].control_fields_selector.control_number, "000862960"
+        )

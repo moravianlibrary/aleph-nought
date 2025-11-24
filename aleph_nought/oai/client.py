@@ -61,6 +61,7 @@ class AlephOAIClient(AlephWebClient):
             config.base,
             config.system_number_pattern,
         )
+        self._context = config.context
 
     def _build_parse_identifier_pattern(
         self,
@@ -196,7 +197,7 @@ class AlephOAIClient(AlephWebClient):
         if xml_marc is None:
             return None
 
-        return MarcRecord.from_xml(xml_marc)
+        return MarcRecord.from_xml(xml_marc, self._context)
 
     def _list_records_in_set(
         self, oai_set: str, from_date: str | None, to_date: str | None
@@ -307,7 +308,7 @@ class AlephOAIClient(AlephWebClient):
                         base=base,
                         system_number=system_number,
                         status=RecordStatus.Active,
-                        record=MarcRecord.from_xml(xml_marc),
+                        record=MarcRecord.from_xml(xml_marc, self._context),
                     )
                 except Exception as e:
                     logger.error(f"Error processing record {identifier}: {e}")

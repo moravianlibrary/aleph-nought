@@ -50,6 +50,7 @@ class AlephZ3950Client:
         self._host = config.host
         self._port = config.port
         self._session = new_connection(self._host, self._port)
+        self._context = config.context
 
         set_connection_option(self._session, "preferredRecordSyntax", "MARC21")
         set_connection_option(self._session, "databaseName", config.base)
@@ -93,6 +94,6 @@ class AlephZ3950Client:
         result_set_p = search_pqf(self._session, query)
 
         return [
-            get_result_set_record(result_set_p, i)
+            get_result_set_record(result_set_p, i, self._context)
             for i in range(get_num_found(result_set_p))
         ]

@@ -1,6 +1,7 @@
 from ctypes import CDLL, POINTER, c_char_p, c_int, c_void_p, cast
 
 from marcdantic import MarcRecord
+from marcdantic.context import MarcContext
 
 from .yaz_types import ResultSet
 
@@ -60,10 +61,7 @@ def get_num_found(result_set_p):
     return result_set_p.contents.size
 
 
-def get_result_set_record(
-    result_set_p,
-    index: int,
-):
+def get_result_set_record(result_set_p, index: int, context: MarcContext):
     record = yaz.ZOOM_resultset_record(result_set_p, index)
     length = c_int(0)
 
@@ -74,4 +72,4 @@ def get_result_set_record(
     if result is None or length.value == 0:
         raise Exception(f"Result set does not contain record at index {index}")
 
-    return MarcRecord.from_mrc(result)
+    return MarcRecord.from_mrc(result, context)

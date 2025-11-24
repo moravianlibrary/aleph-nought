@@ -1,5 +1,6 @@
 from typing import List
 
+from marcdantic.context import MarcContext
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -56,6 +57,7 @@ class AlephOAIConfig(AlephWebConfig):
     system_number_pattern: str
     oai_sets: List[str] = Field([], min_length=1)
     oai_identifier_template: str
+    context: MarcContext = MarcContext()
 
 
 class AlephXConfig(AlephWebConfig):
@@ -72,6 +74,7 @@ class AlephXConfig(AlephWebConfig):
 
     base: str
     page_size: int = 10
+    context: MarcContext = MarcContext()
 
 
 class AlephZ3950Config(BaseModel):
@@ -91,6 +94,7 @@ class AlephZ3950Config(BaseModel):
     host: str
     port: int
     base: str
+    context: MarcContext = MarcContext()
 
 
 class AlephConfig(BaseModel):

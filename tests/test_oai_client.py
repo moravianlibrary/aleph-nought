@@ -23,7 +23,7 @@ class TestOAIClient(unittest.TestCase):
         record = self.client.get_record("000960080")
         self.assertIsNotNone(record)
         self.assertEqual(
-            record.control_fields.control_number, "nkc20091970515"
+            record.control_fields_selector.control_number, "nkc20091970515"
         )
 
     def test_get_record_invalid(self):
