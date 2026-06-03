@@ -1,4 +1,4 @@
-from typing import List
+from typing import Generator, List
 
 from marcdantic import MarcRecord
 
@@ -91,9 +91,29 @@ class AlephZ3950Client:
           records encoded in UTF-8.
         - Uses the YAZ library bindings to communicate with the server.
         """
+        return list(self.iter_search(query))
+
+    def iter_search(self, query: str) -> Generator[MarcRecord, None, None]:
+        """
+        Search the Aleph Z39.50 server using a PQF query and
+        yield MARC21 records one at a time.
+
+        Unlike :meth:`search`, records are fetched lazily from the server,
+        allowing the caller to stop early without downloading the full
+        result set.
+
+        Parameters
+        ----------
+        query : str
+            Query string formatted according to the Prefix Query Format (PQF).
+            See https://software.indexdata.com/yaz/doc/tools.html for details.
+
+        Yields
+        ------
+        MarcRecord
+            MARC records retrieved from the server matching the query.
+        """
         result_set_p = search_pqf(self._session, query)
 
-        return [
-            get_result_set_record(result_set_p, i, self._context)
-            for i in range(get_num_found(result_set_p))
-        ]
+        for i in range(get_num_found(result_set_p)):
+            yield get_result_set_record(result_set_p, i, self._context)
