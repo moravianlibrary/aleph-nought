@@ -40,5 +40,5 @@ tag-version:
 tag-latest:
 	@git tag -d latest 2>/dev/null || true
 	@git push origin :refs/tags/latest 2>/dev/null || true
-	git tag latest
+	git tag -a latest -m "Latest release: v$(VERSION)"
 	git push origin latest
